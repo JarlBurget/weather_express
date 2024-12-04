@@ -28,7 +28,8 @@ const getWeatherData = (city) =>{
         const result = {
         description: description,
         city: city,
-        temp: temp
+        temp: temp,
+        error: null
      }
      resolve(result)
     })
@@ -38,7 +39,7 @@ const getWeatherData = (city) =>{
 })
 }
 
-app.get('/', (req,res) =>{
+app.all('/', (req,res) =>{
     let city 
     if(req.method == 'GET'){
         city = 'Tartu'
@@ -49,18 +50,14 @@ app.get('/', (req,res) =>{
     .then((data) =>{
         res.render('index', data)
     })
-})
-
-app.post('/', (req, res) =>{
-    let city = req.body.cityname
-    getWeatherData(city)
-    .then((data) =>{
-        res.render('index', data)
+    .catch(error =>{
+        res.render('index',{
+            error: 'Problem with getting data, try again...'
+        }
+        )   
     })
-})
-
+    })
     
-
 app.listen(3002, () => {
     console.log('http://localhost:3002')
 })
